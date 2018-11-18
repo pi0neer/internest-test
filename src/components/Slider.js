@@ -9,28 +9,20 @@ const Range = createSliderWithTooltip(Slider.Range)
 const minPrice = localStorage.getItem('minPrice')
 const maxPrice = localStorage.getItem('maxPrice')
 
+// Функция поиска минимального/максимального значения цены, max - флаг (true-ищем максимальную, false-минимальную)
 function findExtremePrices(array, max) {
-    if (max) {
-        let maxPrice = 0
+        let price = max ? 0 : Number.MAX_VALUE
         array.forEach((item, i, arr) => {
-            if (item.data.price > maxPrice) {
-                maxPrice = item.data.price
+            if (max ? item.data.price > price : item.data.price < price) {
+                price = item.data.price
             }
         })
-        return maxPrice
-    } else {
-        let minPrice = Number.MAX_VALUE
-        array.forEach((item, i, arr) => {
-            if (item.data.price < minPrice) {
-                minPrice = item.data.price
-            }
-        })
-        return minPrice
-    }
+        return price
 }
 
 export default class MySlider extends React.Component {
 
+    // Устанавливаем значения цены "От"(lowerBound) и цены "До"(upperBound) из localStorage, если они там есть
     state = {
         lowerBound: minPrice ? parseInt(minPrice) : findExtremePrices(this.props.shopData, false),
         upperBound: maxPrice ? parseInt(maxPrice) : findExtremePrices(this.props.shopData, true),
@@ -39,7 +31,10 @@ export default class MySlider extends React.Component {
         value: [minPrice ? parseInt(minPrice) : findExtremePrices(this.props.shopData, false), maxPrice ? parseInt(maxPrice) : findExtremePrices(this.props.shopData, true)],
     }
 
+    // Функция, которая обрабатываем изменения полей цены "От"(lowerBound) и цены "До"(upperBound), изменяет на соответствующие значения
+    // в слайдере и после этого вызывает функцию фильтрации с новыми параметрами
     handleChangePriceInput = (event) => {
+        // Проверка для parseInt(''), которая в этом случае возвращает NaN, что вызовет ошибку
         let value = event.target.value === '' ? 0 : parseInt(event.target.value)
         let name = event.target.name
         if (name === 'lowerBound') {
@@ -55,13 +50,14 @@ export default class MySlider extends React.Component {
         }
     }
 
+    // Фуннкция, которая обрабатывает изменение слайдера, изменяет на соответствующие значения
+    // поля цены "От"(lowerBound) и цены "До"(upperBound), после этого вызывает функцию фильтрации с новыми параметрами
     onSliderChange = (rangeValues) => {
         this.setState({
             value: rangeValues,
             lowerBound: rangeValues[0],
             upperBound: rangeValues[1],
-        })
-        this.props.handleChangePriceSlider(rangeValues)
+        }, () => {this.props.handleChangePriceSlider(this.state.value)})
     }
 
     render() {

@@ -2,6 +2,7 @@ import React from 'react'
 import ReactTable from "react-table";
 import 'react-table/react-table.css'
 
+// Табличка с хорошим встроенным функционалом и настройками: react-table.js.org
 export default class Table extends React.Component {
 
     render() {
@@ -38,20 +39,19 @@ export default class Table extends React.Component {
         }];
 
         return (
-            <div>
-                <ReactTable
-                    noDataText='Товаров с такой ценой и названием или id не найдено!'
-                    previousText='Предыдущая страница'
-                    nextText='Следующая страница'
-                    loadingText='Загрузка...'
-                    pageText='Страница'
-                    ofText='из'
-                    rowsText='товаров'
-                    defaultPageSize={5}
-                    data={this.props.shopData}
-                    columns={tableColumns}
-                />
-            </div>
+            <ReactTable
+                noDataText='Товаров с такой ценой и названием или id не найдено!'
+                previousText='Предыдущая страница'
+                nextText='Следующая страница'
+                loadingText='Загрузка...'
+                pageText='Страница'
+                ofText='из'
+                rowsText='товаров'
+                defaultPageSize={5}
+                data={this.props.shopData}
+                columns={tableColumns}
+                style={{marginBottom: '50px'}}
+            />
         )
     }
 }

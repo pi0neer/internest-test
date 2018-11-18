@@ -1,6 +1,7 @@
 import React from "react";
 import {Col, Jumbotron, Row} from "react-bootstrap";
 
+// Просто карточка для отображения товара по id
 export default class Card extends React.Component {
 
     render() {

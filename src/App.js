@@ -21,6 +21,7 @@ export default class App extends Component {
         }
     }
 
+    // Фильтрующая функция searchInputValue - значение поля поиска по названию/id, extremePrices - массив с двумя значениями: цена "От" и цена "До"
     handleShopDataChange = (searchInputValue, extremePrices) => {
         let [maxPrice, minPrice, shopItemValue, showItemCard] = [Number.MAX_VALUE, 0, '', false]
         // Проверяем на null, на случай, если функция вызвана со значениями из localStorage и на undefined, если фильтр с ценами пока не трогали
@@ -32,11 +33,14 @@ export default class App extends Component {
             if (showItemCard) shopItemValue = parseInt(searchInputValue)
             else shopItemValue = searchInputValue.toLowerCase()
         }
+        // Находим нужные товары согласно указанным фильтрам
         let displayedShopItems = shopData.goods.filter(element => {
             let price = element.data.price
             let searchValue = element.data.title.toLowerCase()
             let itemId = element.id
+            // Находим товар по id, подразумевая, что id уникален для каждого товара
             if (showItemCard) return shopItemValue === itemId
+            // Находим товар по букве/буквам в названии (регистр не важен, поскольку приводим к нижнему регистру) и указанному промежутку цен
             else return searchValue.indexOf(shopItemValue) !== -1 && price <= maxPrice && price >= minPrice
         })
         this.setState({
